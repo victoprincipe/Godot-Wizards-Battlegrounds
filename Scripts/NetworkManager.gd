@@ -66,6 +66,10 @@ remote func register_player(id, name):
 		rpc("update_player_list", players)
 	pass
 
+func refuse_connections():
+	get_tree().refuse_new_network_connections = true
+	pass
+
 func host_server(player_info):
 	var host = NetworkedMultiplayerENet.new()
 	host.create_server(PORT, SERVER_MAX_PLAYERS)

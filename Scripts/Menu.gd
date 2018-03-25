@@ -39,6 +39,10 @@ func connection_succeeded():
 		lobby_panel.get_node("WaitingPlayersLabel").show()
 	pass
 
+sync func start_game():
+	get_tree().change_scene("res://Levels/Astilia.tscn")
+	pass
+
 func check_empty_name():
 	if name_line_edit.text != "":		
 		return true
@@ -71,4 +75,9 @@ func _on_HostButton_pressed():
 
 func _on_OkButton_pressed():
 	error_popup.hide()
+	pass
+
+func _on_StartGameButton_pressed():
+	NetworkManager.refuse_connections()
+	rpc("start_game")
 	pass
