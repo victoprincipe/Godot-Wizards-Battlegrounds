@@ -5,17 +5,29 @@ onready var settings_panel = get_node("Panel/Main/SettingsPanel")
 onready var main_panel = get_node("Panel/Main")
 onready var lobby_panel = get_node("Panel/Lobby")
 onready var lobby_player_list = get_node("Panel/Lobby/LobbyPlayersList")
-onready var error_popup_name_empty = get_node("ErrorPopup")
+onready var error_popup = get_node("ErrorPopup")
 
 func _ready():
 	NetworkManager.connect("connection_succeeded", self, "connection_succeeded")
 	NetworkManager.connect("player_list_changed", self, "update_lobby")
+	NetworkManager.connect("connection_fail", self, "connection_failed")
+	NetworkManager.connect("server_disconnected", self, "server_disconnected")
 	pass
 
 func update_lobby():
 	lobby_player_list.clear()
 	for p in NetworkManager.players:
 		lobby_player_list.add_item(p.name)
+	pass
+
+func server_disconnected():
+	error_popup.get_node("ErrorLabel").text = "Disconnected from server!"
+	error_popup.popup_centered()
+	pass
+
+func connection_failed():
+	error_popup.get_node("ErrorLabel").text = "Connection Failed!"
+	error_popup.popup_centered()
 	pass
 
 func connection_succeeded():
@@ -31,7 +43,7 @@ func check_empty_name():
 	if name_line_edit.text != "":		
 		return true
 	else:
-		error_popup_name_empty.popup_centered()
+		error_popup.popup_centered()
 		return false
 	pass
 
@@ -44,7 +56,7 @@ func _on_SettingsButton_pressed():
 	pass
 
 func _on_SetServerIPButton_pressed():
-	NetworkManager.SERVER_IP = get_node("MainPanel/SettingsPanel/ServerIpLineEdit").text
+	NetworkManager.SERVER_IP = get_node("Panel/Main/SettingsPanel/ServerIpLineEdit").text
 	pass 
 
 func _on_ConnectButton_pressed():
@@ -57,7 +69,6 @@ func _on_HostButton_pressed():
 		NetworkManager.host_server(name_line_edit.text)
 	pass
 
-
 func _on_OkButton_pressed():
-	error_popup_name_empty.hide()
+	error_popup.hide()
 	pass

@@ -9,11 +9,30 @@ var players = []
 
 signal player_list_changed()
 signal connection_succeeded()
+signal connection_fail()
+signal server_disconnected();
 
 func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
 	get_tree().connect("connection_failed", self, "_connected_fail")
 	get_tree().connect("server_disconnected", self, "_server_disconnected")
+	get_tree().connect("network_peer_disconnected", self, "_on_player_disconnected")
+	pass
+
+func _on_player_disconnected(id):
+	for p in players:
+		if p.id == id:
+			players.remove(players.find(p))
+	rpc("update_player_list", players)
+	pass
+
+func _server_disconnected():
+	emit_signal("server_disconnected")
+	pass
+
+func _connected_fail():
+	print("FAILED TO CONNECT")
+	emit_signal("connection_fail")
 	pass
 
 func _connected_ok():
@@ -29,7 +48,7 @@ func is_host():
 		return false
 	pass
 
-remote func update_player_list(players_list):
+sync func update_player_list(players_list):
 	players = players_list
 	emit_signal("player_list_changed")
 	pass
