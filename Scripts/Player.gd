@@ -3,14 +3,22 @@ extends Node
 onready var k_body = get_node("PlayerBody")
 var bullet = preload("res://Scenes/Bullet.tscn")
 
-var speed = 80
+var speed = 40
+var health = 5
 
 slave var slave_position = Vector2()
 
 sync func fireball(pos):
 	var b = bullet.instance()
+	b.owner_body = k_body
 	b.get_node("KinematicBody2D").position = pos
 	get_tree().get_root().add_child(b)
+	pass
+
+func take_damage(dmg):
+	health -= dmg
+	if health <= 0:
+		self.queue_free()
 	pass
 
 func _ready():
