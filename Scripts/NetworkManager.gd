@@ -10,7 +10,8 @@ var players = []
 signal player_list_changed()
 signal connection_succeeded()
 signal connection_fail()
-signal server_disconnected();
+signal player_disconnected(id)
+signal server_disconnected()
 
 func _ready():
 	get_tree().connect("connected_to_server", self, "_connected_ok")
@@ -24,6 +25,7 @@ func _on_player_disconnected(id):
 		if p.id == id:
 			players.remove(players.find(p))
 	rpc("update_player_list", players)
+	emit_signal("player_disconnected", id)
 	pass
 
 func _server_disconnected():

@@ -3,14 +3,13 @@ extends Node
 onready var k_body = get_node("PlayerBody")
 var bullet = preload("res://Scenes/Bullet.tscn")
 
-var speed = 150
+var speed = 80
 
 slave var slave_position = Vector2()
 
 sync func fireball(pos):
-	print(pos)
 	var b = bullet.instance()
-	b.k_body.position = Vector2(pos.x, pos.y)
+	b.get_node("KinematicBody2D").position = pos
 	get_tree().get_root().add_child(b)
 	pass
 
