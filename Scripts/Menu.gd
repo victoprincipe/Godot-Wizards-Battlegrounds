@@ -39,7 +39,7 @@ func connection_succeeded():
 		lobby_panel.get_node("WaitingPlayersLabel").show()
 	pass
 
-sync func start_game():
+sync func load_level():
 	get_tree().change_scene("res://Levels/Astilia.tscn")
 	pass
 
@@ -79,5 +79,5 @@ func _on_OkButton_pressed():
 
 func _on_StartGameButton_pressed():
 	NetworkManager.refuse_connections()
-	rpc("start_game")
+	rpc("load_level")
 	pass

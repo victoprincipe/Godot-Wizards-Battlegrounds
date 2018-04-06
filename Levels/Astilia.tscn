@@ -11,17 +11,53 @@ script = ExtResource( 1 )
 
 [node name="Positions" type="Node" parent="." index="1"]
 
-[node name="Game" type="Node" parent="Positions" index="0"]
+[node name="SpawnPositions" type="Node2D" parent="Positions" index="0"]
 
-[node name="GamePos" type="Position2D" parent="Positions/Game" index="0"]
+editor/display_folded = true
+
+[node name="GamePos" type="Position2D" parent="Positions/SpawnPositions" index="0"]
 
 position = Vector2( 131.78, 115.876 )
 
-[node name="Lobby" type="Node" parent="Positions" index="1"]
+[node name="LobbySpawnPositions" type="Node2D" parent="Positions" index="1"]
 
-[node name="LobbyPos" type="Position2D" parent="Positions/Lobby" index="0"]
+editor/display_folded = true
+position = Vector2( 259.016, 554.386 )
 
-position = Vector2( 815.674, 524.849 )
+[node name="LobbyPos" type="Position2D" parent="Positions/LobbySpawnPositions" index="0"]
+
+position = Vector2( 92, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="LobbyPos2" type="Position2D" parent="Positions/LobbySpawnPositions" index="1"]
+
+position = Vector2( 156, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="LobbyPos3" type="Position2D" parent="Positions/LobbySpawnPositions" index="2"]
+
+position = Vector2( 220, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="LobbyPos4" type="Position2D" parent="Positions/LobbySpawnPositions" index="3"]
+
+position = Vector2( 284, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="LobbyPos5" type="Position2D" parent="Positions/LobbySpawnPositions" index="4"]
+
+position = Vector2( 348, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="LobbyPos6" type="Position2D" parent="Positions/LobbySpawnPositions" index="5"]
+
+position = Vector2( 412, 0 )
+_sections_unfolded = [ "Transform" ]
+
+[node name="LobbyPos7" type="Position2D" parent="Positions/LobbySpawnPositions" index="6"]
+
+position = Vector2( 476, 0 )
+_sections_unfolded = [ "Transform" ]
 
 [node name="Control" type="Control" parent="." index="2"]
 
