@@ -5,6 +5,7 @@ const SERVER_MAX_PLAYERS = 16
 var SERVER_IP = "127.0.0.1"
 
 var player_name
+var player_id
 var players = []
 
 signal player_list_changed()
@@ -77,6 +78,7 @@ func host_server(player_info):
 	host.create_server(PORT, SERVER_MAX_PLAYERS)
 	get_tree().set_network_peer(host)
 	player_name = player_info
+	player_id = get_tree().get_network_unique_id()
 	_connected_ok()
 	pass
 
@@ -85,4 +87,5 @@ func connect_player(player_info):
 	host.create_client(SERVER_IP, PORT)
 	get_tree().set_network_peer(host)
 	player_name = player_info
+	player_id = get_tree().get_network_unique_id()
 	pass
