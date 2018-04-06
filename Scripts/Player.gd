@@ -1,16 +1,17 @@
 extends Node
 
-const WALK_SPEED = 60
-const RUN_SPEED = 100
+const WALK_SPEED = 150
+const RUN_SPEED = 200
 var velocity = Vector2()
 var look_direction = Vector2()
 
 onready var k_body = get_node("PlayerBody")
+onready var sprite = get_node("PlayerBody/Sprite")
 var bullet = preload("res://Scenes/Bullet.tscn")
 onready var camera = get_node("PlayerBody/Pivot/CameraOffset/Camera2D")
 
 var speed
-var health = 5
+var health = 500
 
 slave var slave_position = Vector2()
 
@@ -22,6 +23,7 @@ sync func fireball(pos):
 	pass
 
 func take_damage(dmg):
+	damage_animation()
 	health -= dmg
 	if health <= 0:
 		self.queue_free()
@@ -59,7 +61,31 @@ func update_look_direction(input_direction):
 	pass
 	
 func move(input_direction):
+	if Input.is_action_pressed("ui_select"):
+		printerr(get_viewport().get_mouse_position().normalized())
+		fireball(input_direction)
 	speed = RUN_SPEED if Input.is_action_pressed("run") else  WALK_SPEED
 	velocity =  input_direction.normalized() * speed
 	k_body.move_and_slide(velocity)
+	pass
+	
+func damage_animation():
+	var color = Color(1.0, 1.0, 1.0, 1.0)
+	var normal_color = Color(1.0, 1.0, 1.0, 1.0)
+	var damage_color = Color(0.8, 0.4, 0.4, 0.8)
+	var tempo = 0.5
+	var conta_tempo = 0.0
+	
+	while conta_tempo <= tempo:
+		color = color.linear_interpolate(damage_color, conta_tempo)
+		sprite.self_modulate = color
+		conta_tempo += get_process_delta_time()
+		yield(get_tree(), "idle_frame")
+	conta_tempo = 0.0
+	while conta_tempo <= tempo:
+		color = color.linear_interpolate(normal_color, conta_tempo)
+		sprite.self_modulate = color
+		conta_tempo += get_process_delta_time()
+		yield(get_tree(), "idle_frame")
+	conta_tempo = 0.0
 	pass
