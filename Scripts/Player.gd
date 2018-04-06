@@ -1,9 +1,14 @@
 extends Node
 
+const WALK_SPEED = 60
+const RUN_SPEED = 100
+var velocity = Vector2()
+var look_direction = Vector2()
+
 onready var k_body = get_node("PlayerBody")
 var bullet = preload("res://Scenes/Bullet.tscn")
 
-var speed = 40
+var speed
 var health = 5
 
 slave var slave_position = Vector2()
@@ -26,19 +31,32 @@ func _ready():
 
 func _process(delta):
 	if is_network_master():
-		var velocity = Vector2(0, 0)
-		if Input.is_action_pressed("ui_up"):
-			velocity.y = -speed
-		if Input.is_action_pressed("ui_down"):
-			velocity.y = speed
-		if Input.is_action_pressed("ui_right"):
-			velocity.x = speed
-		if Input.is_action_pressed("ui_left"):
-			velocity.x = -speed
-		if Input.is_action_just_pressed("ui_accept"):
-			rpc("fireball", k_body.position)
-		k_body.move_and_slide(velocity)
+		
+		var input_direction = get_input_direction()
+		update_look_direction(input_direction)
+		
+		move(input_direction)
 		rset_unreliable("slave_position", k_body.position)
 	else:
 		k_body.position = slave_position
+	pass
+
+
+func get_input_direction():
+	var input_direction = Vector2()
+	input_direction.x = int(Input.is_action_pressed("ui_right")) - int(Input.is_action_pressed("ui_left"))
+	input_direction.y = int(Input.is_action_pressed("ui_down")) - int(Input.is_action_pressed("ui_up"))
+	return input_direction
+	
+func update_look_direction(input_direction):
+	if not input_direction:
+		return
+	look_direction = input_direction
+	printerr(input_direction)
+	pass
+	
+func move(input_direction):
+	speed = RUN_SPEED if Input.is_action_pressed("run") else  WALK_SPEED
+	velocity =  input_direction.normalized() * speed
+	k_body.move_and_slide(velocity)
 	pass
