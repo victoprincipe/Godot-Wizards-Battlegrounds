@@ -7,6 +7,7 @@ var look_direction = Vector2()
 
 onready var k_body = get_node("PlayerBody")
 var bullet = preload("res://Scenes/Bullet.tscn")
+onready var camera = get_node("PlayerBody/Pivot/CameraOffset/Camera2D")
 
 var speed
 var health = 5
@@ -27,6 +28,8 @@ func take_damage(dmg):
 	pass
 
 func _ready():
+	if is_network_master():
+		camera.make_current()
 	pass
 
 func _process(delta):
