@@ -2,11 +2,13 @@ extends Node
 
 onready var k_body = get_node("KinematicBody2D")
 var owner_body
-const speed = 100
+const speed = 400
 var velocity = Vector2()
 
 func _ready():
-	velocity = get_viewport().get_mouse_position().normalized() * speed
+	var look_direction = (k_body.get_global_mouse_position() - k_body.position).normalized()
+	velocity = look_direction * speed
+	k_body.rotation = look_direction.angle()
 	pass
 	
 func _process(delta):

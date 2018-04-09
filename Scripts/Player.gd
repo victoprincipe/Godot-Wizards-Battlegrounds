@@ -1,7 +1,7 @@
 extends Node
 
-const WALK_SPEED = 150
-const RUN_SPEED = 200
+const WALK_SPEED = 80
+const RUN_SPEED = 130
 var velocity = Vector2()
 var look_direction = Vector2()
 
@@ -11,9 +11,30 @@ var bullet = preload("res://Scenes/Bullet.tscn")
 onready var camera = get_node("PlayerBody/Pivot/CameraOffset/Camera2D")
 
 var speed
-var health = 500
+var health = 5
+enum STATES { IDLE, MOVE }
+var state = IDLE
+enum face {FRONT, BACK, LEFT, RIGHT}
+var last_look_direction = Vector2()
+
 
 slave var slave_position = Vector2()
+
+func _change_state(new_state):
+	match new_state:
+		IDLE:
+			sprite.play('idle')
+		MOVE:
+			if look_direction == Vector2(1,0) or look_direction == Vector2(1,1) or look_direction == Vector2(1,-1): 
+				sprite.play('rightwalking')
+			if look_direction == Vector2(-1,0) or look_direction == Vector2(-1,1) or look_direction == Vector2(-1,-1):
+				sprite.play('leftwalking')
+			if look_direction == Vector2(0,1):
+				sprite.play('frontwalking')
+			if look_direction == Vector2(0,-1):
+				sprite.play('backwalking')
+			last_look_direction = look_direction
+	state = new_state
 
 sync func fireball(pos):
 	var b = bullet.instance()
@@ -36,11 +57,16 @@ func _ready():
 
 func _process(delta):
 	if is_network_master():
-		
 		var input_direction = get_input_direction()
 		update_look_direction(input_direction)
-		
+		if (state == IDLE and input_direction) or (look_direction != last_look_direction and input_direction):
+			_change_state(MOVE)
+		elif state == MOVE:
+			if not input_direction:
+				_change_state(IDLE)
+				return
 		move(input_direction)
+		
 		rset_unreliable("slave_position", k_body.position)
 	else:
 		k_body.position = slave_position
@@ -57,13 +83,11 @@ func update_look_direction(input_direction):
 	if not input_direction:
 		return
 	look_direction = input_direction
-	printerr(input_direction)
 	pass
 	
 func move(input_direction):
-	if Input.is_action_pressed("ui_select"):
-		printerr(get_viewport().get_mouse_position().normalized())
-		fireball(input_direction)
+	if Input.is_action_just_pressed("click"):
+		fireball(k_body.position)
 	speed = RUN_SPEED if Input.is_action_pressed("run") else  WALK_SPEED
 	velocity =  input_direction.normalized() * speed
 	k_body.move_and_slide(velocity)

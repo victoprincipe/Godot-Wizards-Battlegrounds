@@ -12,3 +12,4 @@ func _physics_process(delta):
 
 func update_pivot_angle():
 	rotation = parent.look_direction.angle()
+	
