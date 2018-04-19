@@ -4,11 +4,11 @@ onready var k_body = get_node("KinematicBody2D")
 var owner_body
 const speed = 400
 var velocity = Vector2()
+var direction
 
 func _ready():
-	var look_direction = (k_body.get_global_mouse_position() - k_body.position).normalized()
-	velocity = look_direction * speed
-	k_body.rotation = look_direction.angle()
+	velocity = direction * speed
+	k_body.rotation = direction.angle()
 	pass
 	
 func _process(delta):
@@ -21,4 +21,8 @@ func _on_Area2D_body_entered(body):
 		if body.get_owner().has_method("take_damage"):
 			body.get_owner().take_damage(1)
 			self.queue_free()
+	pass
+
+func set_direction(dir):
+	direction = dir
 	pass

@@ -12,11 +12,11 @@ onready var camera = get_node("PlayerBody/Pivot/CameraOffset/Camera2D")
 
 var speed
 var health = 5
-enum STATES { IDLE, MOVE }
+enum STATES { IDLE = 0, MOVE = 1 }
 var state = IDLE
+slave var slave_state
 enum face {FRONT, BACK, LEFT, RIGHT}
 var last_look_direction = Vector2()
-
 
 slave var slave_position = Vector2()
 
@@ -36,9 +36,10 @@ func _change_state(new_state):
 			last_look_direction = look_direction
 	state = new_state
 
-sync func fireball(pos):
+sync func fireball(pos, dir):
 	var b = bullet.instance()
 	b.owner_body = k_body
+	b.set_direction(dir)
 	b.get_node("KinematicBody2D").position = pos
 	get_tree().get_root().add_child(b)
 	pass
@@ -61,14 +62,16 @@ func _process(delta):
 		update_look_direction(input_direction)
 		if (state == IDLE and input_direction) or (look_direction != last_look_direction and input_direction):
 			_change_state(MOVE)
+			rset_unreliable("slave_state", MOVE)
 		elif state == MOVE:
 			if not input_direction:
 				_change_state(IDLE)
-				return
+				rset_unreliable("slave_state", IDLE)
 		move(input_direction)
-		
 		rset_unreliable("slave_position", k_body.position)
 	else:
+		print(slave_state)
+		_change_state(slave_state)
 		k_body.position = slave_position
 	pass
 
@@ -87,7 +90,8 @@ func update_look_direction(input_direction):
 	
 func move(input_direction):
 	if Input.is_action_just_pressed("click"):
-		fireball(k_body.position)
+		var bullet_direction = (k_body.get_global_mouse_position() - k_body.position).normalized()
+		rpc("fireball", k_body.position, bullet_direction)
 	speed = RUN_SPEED if Input.is_action_pressed("run") else  WALK_SPEED
 	velocity =  input_direction.normalized() * speed
 	k_body.move_and_slide(velocity)
