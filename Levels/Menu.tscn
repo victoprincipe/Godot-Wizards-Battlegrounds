@@ -6,7 +6,7 @@
 
 _sections_unfolded = [ "Resource" ]
 
-[node name="Menu" type="Control"]
+[node name="Menu" type="Control" index="0"]
 
 anchor_left = 0.0
 anchor_top = 0.0

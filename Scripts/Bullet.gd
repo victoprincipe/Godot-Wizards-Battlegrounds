@@ -5,6 +5,11 @@ var owner_body
 const speed = 400
 var velocity = Vector2()
 var direction
+var dmg_info = {
+	"player_name" : "player_name",
+	"dmg" : 1,
+	"camera" : null
+	}
 
 func _ready():
 	velocity = direction * speed
@@ -19,7 +24,7 @@ func _process(delta):
 func _on_Area2D_body_entered(body):
 	if body.is_in_group("Player") and body != owner_body:
 		if body.get_owner().has_method("take_damage"):
-			body.get_owner().take_damage(1)
+			body.get_owner().take_damage(dmg_info)
 			self.queue_free()
 	pass
 

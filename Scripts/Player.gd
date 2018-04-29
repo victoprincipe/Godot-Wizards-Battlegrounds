@@ -41,13 +41,17 @@ sync func fireball(pos, dir):
 	b.owner_body = k_body
 	b.set_direction(dir)
 	b.get_node("KinematicBody2D").position = pos
+	b.dmg_info["dmg"] = 1
+	b.dmg_info["player_name"] = NetworkManager.player_name
+	b.dmg_info["camera"] = camera
 	get_tree().get_root().add_child(b)
 	pass
 
-func take_damage(dmg):
+func take_damage(dmg_info):
 	damage_animation()
-	health -= dmg
+	health -= dmg_info["dmg"]
 	if health <= 0:
+		dmg_info["camera"].make_current()
 		self.queue_free()
 	pass
 
@@ -70,7 +74,6 @@ func _process(delta):
 		move(input_direction)
 		rset_unreliable("slave_position", k_body.position)
 	else:
-		print(slave_state)
 		_change_state(slave_state)
 		k_body.position = slave_position
 	pass
