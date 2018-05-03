@@ -5,6 +5,11 @@ var owner_body
 const speed = 400
 var velocity = Vector2()
 var direction
+var info = { 
+		"player_name" : "",
+		"dmg" : 1,
+		"camera" : ""
+	}
 
 func _ready():
 	velocity = direction * speed
