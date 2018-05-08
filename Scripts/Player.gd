@@ -41,16 +41,18 @@ sync func fireball(pos, dir, info):
 	b.owner_body = k_body
 	b.set_direction(dir)
 	b.get_node("KinematicBody2D").position = pos
+	b.dmg_info["dmg"] = 1
+	b.dmg_info["player_name"] = NetworkManager.player_name
+	b.dmg_info["camera"] = camera
 	get_tree().get_root().add_child(b)
 	pass
 
-func take_damage(info):
+func take_damage(dmg_info):
 	damage_animation()
-	health -= dmg
+	health -= dmg_info["dmg"]
 	if health <= 0:
-		var spec_cam = preload("res://Scenes/SpectatorCam.tscn").instance()
-		get_tree().get_root().add_child(spec_cam)
-		get_tree().get_node("PlayerBody").queue_free()
+		dmg_info["camera"].make_current()
+		self.queue_free()
 	pass
 
 func _ready():
