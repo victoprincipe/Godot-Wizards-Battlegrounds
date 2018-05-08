@@ -14,7 +14,7 @@ var speed
 var health = 5
 enum STATES { IDLE = 0, MOVE = 1 }
 var state = IDLE
-slave var slave_state
+slave var slave_state = STATES.IDLE
 enum face {FRONT, BACK, LEFT, RIGHT}
 var last_look_direction = Vector2()
 
@@ -93,8 +93,9 @@ func update_look_direction(input_direction):
 	
 func move(input_direction):
 	if Input.is_action_just_pressed("click"):
+		var dmg_info = { "dmg" : 1, "player_name":NetworkManager.player_name, "camera": camera }
 		var bullet_direction = (k_body.get_global_mouse_position() - k_body.position).normalized()
-		rpc("fireball", k_body.position, bullet_direction)
+		rpc("fireball", k_body.position, bullet_direction, dmg_info)
 	speed = RUN_SPEED if Input.is_action_pressed("run") else  WALK_SPEED
 	velocity =  input_direction.normalized() * speed
 	k_body.move_and_slide(velocity)
