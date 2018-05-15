@@ -12,7 +12,7 @@
 [ext_resource path="res://Sprites/area8.png" type="Texture" id=10]
 [ext_resource path="res://Sprites/area9.png" type="Texture" id=11]
 
-[node name="Astilia" type="Node" index="0"]
+[node name="Astilia" type="Node"]
 
 script = ExtResource( 1 )
 

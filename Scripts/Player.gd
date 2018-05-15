@@ -12,7 +12,7 @@ onready var camera = get_node("PlayerBody/Pivot/CameraOffset/Camera2D")
 
 var speed
 var health = 5
-enum STATES { IDLE = 0, MOVE = 1 }
+enum STATES { IDLE = 0, MOVE_RIGHT = 1, MOVE_LEFT = 2, MOVE_FRONT = 3, MOVE_BACK = 4 }
 var state = IDLE
 slave var slave_state = STATES.IDLE
 enum face {FRONT, BACK, LEFT, RIGHT}
@@ -24,16 +24,15 @@ func _change_state(new_state):
 	match new_state:
 		IDLE:
 			sprite.play('idle')
-		MOVE:
-			if look_direction == Vector2(1,0) or look_direction == Vector2(1,1) or look_direction == Vector2(1,-1): 
-				sprite.play('rightwalking')
-			if look_direction == Vector2(-1,0) or look_direction == Vector2(-1,1) or look_direction == Vector2(-1,-1):
-				sprite.play('leftwalking')
-			if look_direction == Vector2(0,1):
-				sprite.play('frontwalking')
-			if look_direction == Vector2(0,-1):
-				sprite.play('backwalking')
-			last_look_direction = look_direction
+		MOVE_RIGHT:
+			sprite.play('rightwalking')
+		MOVE_LEFT:
+			sprite.play('leftwalking')
+		MOVE_FRONT:
+			sprite.play('frontwalking')
+		MOVE_BACK:
+			sprite.play('backwalking')
+		#last_look_direction = look_direction
 	state = new_state
 
 sync func fireball(pos, dir, info):
@@ -66,9 +65,20 @@ func _process(delta):
 		var input_direction = get_input_direction()
 		update_look_direction(input_direction)
 		if (state == IDLE and input_direction) or (look_direction != last_look_direction and input_direction):
-			_change_state(MOVE)
-			rset_unreliable("slave_state", MOVE)
-		elif state == MOVE:
+			if look_direction == Vector2(1,0) or look_direction == Vector2(1,1) or look_direction == Vector2(1,-1): 
+				_change_state(MOVE_RIGHT)
+				rset_unreliable("slave_state", MOVE_RIGHT)
+			if look_direction == Vector2(-1,0) or look_direction == Vector2(-1,1) or look_direction == Vector2(-1,-1):
+				_change_state(MOVE_LEFT)
+				rset_unreliable("slave_state", MOVE_LEFT)
+			if look_direction == Vector2(0,1):
+				_change_state(MOVE_FRONT)
+				rset_unreliable("slave_state", MOVE_FRONT)
+			if look_direction == Vector2(0,-1):
+				_change_state(MOVE_BACK)
+				rset_unreliable("slave_state", MOVE_BACK)
+			last_look_direction = look_direction
+		elif state == MOVE_BACK or state == MOVE_LEFT or state == MOVE_FRONT or state == MOVE_RIGHT:
 			if not input_direction:
 				_change_state(IDLE)
 				rset_unreliable("slave_state", IDLE)
