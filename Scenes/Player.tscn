@@ -54,7 +54,7 @@ _sections_unfolded = [ "Resource" ]
 custom_solver_bias = 0.0
 extents = Vector2( 16, 24 )
 
-[node name="Player" type="Node" index="0"]
+[node name="Player" type="Node"]
 
 script = ExtResource( 1 )
 fire_rate = 0.8

@@ -2,6 +2,8 @@ extends Node
 
 onready var player_scene = preload("res://Scenes/Player.tscn")
 
+var players_alive = 0
+
 remote func spawn_player(id, position):
 	var p 
 	p = player_scene.instance()
@@ -9,6 +11,13 @@ remote func spawn_player(id, position):
 	p.name = str(id)
 	p.get_node("PlayerBody").global_position = position
 	get_tree().get_root().add_child(p)
+	players_alive += 1
+	pass
+
+sync func player_dead():
+	players_alive -= 1
+	if players_alive <= 1:
+		pass
 	pass
 
 func on_player_disconnect(id):

@@ -14,6 +14,7 @@ onready var stamina_label = get_node("CanvasLayer/PlayerGUI/StaminaLabel")
 onready var player_name_label = get_node("PlayerBody/PlayerNameLabel")
 onready var player_collision = get_node("PlayerBody/CollisionShape2D")
 onready var player_info = get_node("CanvasLayer/PlayerGUI/PlayerInfo")
+onready var alive_label = get_node("CanvasLayer/PlayerGUI/AliveLabel")
 
 var speed
 var health = 100
