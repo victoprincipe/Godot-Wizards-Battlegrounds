@@ -1,7 +1,7 @@
 extends Node
 
 const WALK_SPEED = 80
-const RUN_SPEED = 130
+const RUN_SPEED = 190
 var velocity = Vector2()
 var look_direction = Vector2()
 
@@ -10,7 +10,9 @@ onready var sprite = get_node("PlayerBody/Sprite")
 var bullet = preload("res://Scenes/Bullet.tscn")
 onready var camera = get_node("PlayerBody/Pivot/CameraOffset/Camera2D")
 onready var health_label = get_node("CanvasLayer/PlayerGUI/HPLabel")
+onready var health_bar = get_node("CanvasLayer/PlayerGUI/HPBar")
 onready var stamina_label = get_node("CanvasLayer/PlayerGUI/StaminaLabel")
+onready var stamina_bar = get_node("CanvasLayer/PlayerGUI/StaminaBar")
 onready var player_name_label = get_node("PlayerBody/PlayerNameLabel")
 onready var player_collision = get_node("PlayerBody/CollisionShape2D")
 onready var player_info = get_node("CanvasLayer/PlayerGUI/PlayerInfo")
@@ -76,7 +78,9 @@ func _ready():
 	if is_network_master():
 		camera.make_current()
 		health_label.text = "HP: " + str(health)
+		health_bar.value = health
 		stamina_label.text = "STAMINA: " + str(stamina)
+		stamina_bar.value = stamina
 		player_name_label.text = NetworkManager.player_name
 	else:
 		health_label.hide()
@@ -85,6 +89,8 @@ func _ready():
 
 func _process(delta):
 	if is_network_master():
+		health_bar.value = health
+		stamina_bar.value = stamina
 		rset("slave_player_name", NetworkManager.player_name)
 		stamina_timer += delta
 		fire_rate_timer += delta
