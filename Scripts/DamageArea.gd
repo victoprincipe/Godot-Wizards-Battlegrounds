@@ -8,8 +8,10 @@ var timer = 0
 var initial_scale 
 var scale_by_time
 var damageable_players = []
+var dmg_info = { "dmg" : 0}
 
 func _ready():
+	dmg_info["dmg"] = damage
 	damage_timer.wait_time = damage_tick_time
 	damage_timer.one_shot = false
 	damage_timer.start()
@@ -36,6 +38,7 @@ func _on_DamageArea_body_exited(body):
 
 func _on_Timer_timeout():
 	for p in damageable_players:
-		if p.get_owner().has_method("take_damage"):
-			p.get_owner().take_damage(damage)
+		if weakref(p).get_ref():
+			if p.get_owner().has_method("take_damage"):
+				p.get_owner().take_damage(dmg_info)
 	pass 

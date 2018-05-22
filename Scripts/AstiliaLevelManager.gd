@@ -6,6 +6,7 @@ slave var has_started = false
 var spawn_position = 0
 var lobby_positions = []
 var loaded_players = []
+var alive_players
 
 onready var game_manager = get_node("GameManager")
 
